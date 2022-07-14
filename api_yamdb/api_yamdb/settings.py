@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'reviews',
     'users',
     'api',
+    'titles',
 ]
 
 MIDDLEWARE = [
@@ -86,12 +87,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 REST_FRAMEWORK = {
-    []
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
 }
 
 # Internationalization
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
