@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-from .generate_code import generate_confirmation_code
+# from .generate_code import generate_confirmation_code
 
 
 class User(AbstractUser):
@@ -20,12 +20,12 @@ class User(AbstractUser):
         blank=True,
         verbose_name='Биография'
     )
-    confirmation_code = models.CharField(
-        max_length=50,
-        blank=True,
-        verbose_name='Код для авторизации',
-        default=generate_confirmation_code()
-    )
+    # confirmation_code = models.CharField(
+    #     max_length=50,
+    #     blank=True,
+    #     verbose_name='Код для авторизации',
+    #     default=generate_confirmation_code()
+    # )
     first_name = models.CharField(
         'Имя',
         max_length=150,
