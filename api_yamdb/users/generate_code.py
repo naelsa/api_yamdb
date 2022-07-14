@@ -1,5 +1,5 @@
 import string
-from random import random
+import random
 
 CONFIRMATION_CODE_LEN = 10
 

@@ -13,7 +13,6 @@ class User(AbstractUser):
     email = models.EmailField(
         max_length=254,
         unique=True,
-        blank=True,
         verbose_name='Электронная почта'
     )
     bio = models.TextField(
@@ -53,3 +52,15 @@ class User(AbstractUser):
         default='user'
     )
 
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+        ordering = ('username',)
+
+    @property
+    def is_admin(self):
+        return self.role == self.USER_ROLE_ADMIN or self.is_superuser
+
+    @property
+    def is_moderator(self):
+        return self.role == self.USER_ROLE_MODERATOR
