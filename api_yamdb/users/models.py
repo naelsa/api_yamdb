@@ -24,7 +24,7 @@ class User(AbstractUser):
         max_length=50,
         blank=True,
         verbose_name='Код для авторизации',
-        #default=generate_confirmation_code()
+        default=generate_confirmation_code()
     )
     first_name = models.CharField(
         'Имя',

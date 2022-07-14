@@ -1,2 +1,9 @@
+import string
+from random import random
+
+CONFIRMATION_CODE_LEN = 10
+
+
 def generate_confirmation_code():
-    pass
+    return ''.join(random.choices(string.digits + string.ascii_uppercase,
+                                  k=CONFIRMATION_CODE_LEN))
