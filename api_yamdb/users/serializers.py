@@ -6,13 +6,7 @@ class UserSerializer(serializers.ModelSerializer):
     """Сериализатор пользователей."""
 
     class Meta:
-        fields = ('first_name',
-                  'last_name',
-                  'username',
-                  'bio',
-                  'email',
-                  'role',
-                  'confirmation_code',)
+        fields = '__all__',
         model = User
 
 
@@ -30,7 +24,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return data
 
 
-class AuthTokenSerializer(serializers.Serializer):
+class RegTokenSerializer(serializers.Serializer):
     """Сериализатор токена."""
 
     username = serializers.CharField(max_length=150)
