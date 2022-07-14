@@ -29,7 +29,7 @@ class Titles(models.Model):
     )
     genre = models.ManyToManyField(
         Genres, related_name="titles",
-        blank=True, null=True
+        blank=True
     )
 
     def __str__(self):
