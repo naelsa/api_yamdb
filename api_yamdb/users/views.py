@@ -36,10 +36,10 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data)
 
-#
-# @api_view(['POST'])
-# def signup_user(request):
-#     serializer = RegTokSerializer(data=request.data)
-#     serializer.is_valid(raise_exception=True)
-#     username = serializer.validated_data.get('username')
-#     email = serializer.validated_data.get('email')
+
+@api_view(['POST'])
+def signup_user(request):
+    serializer = RegTokSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    username = serializer.validated_data.get('username')
+    email = serializer.validated_data.get('email')

@@ -6,8 +6,7 @@ class UserSerializer(serializers.ModelSerializer):
     """Сериализатор пользователей."""
 
     class Meta:
-        fields = '__all__'
-        exclude = ('confirmation_code',)
+        fields = ('username', 'email', 'bio', 'first_name', 'last_name', 'role',)
         model = User
 
 
