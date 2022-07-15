@@ -1,23 +1,49 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+
 from .models import Titles, Genres, Categories
-from .serializers import (TitlesSerializer, GenresSerializer,
-    CategoriesSerializer)
 from .permissions import IsAdminOrReadOnly
+from .serializers import (TitlesSerializer, GenresSerializer,
+                          CategoriesSerializer, TitlesObjectSerializer)
 
 
 class TitlesViewSet(viewsets.ModelViewSet):
     queryset = Titles.objects.all()
     serializer_class = TitlesSerializer
     permission_classes = (IsAdminOrReadOnly,)
-    #pagination_class = LimitOffsetPagination
 
-class GenresViewSet(viewsets.ReadOnlyModelViewSet):
+
+class TitlesObjectViewSet(viewsets.ModelViewSet):
+    queryset = Titles.objects.all()
+    serializer_class = TitlesObjectSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+
+    def get_object(self):
+        id = self.kwargs.get("id")
+        return get_object_or_404(Titles, id=id)
+
+
+class GenresViewSet(viewsets.ModelViewSet):
     queryset = Genres.objects.all()
     serializer_class = GenresSerializer
     permission_classes = (IsAdminOrReadOnly,)
+    search_fields = ('name',)
 
-class CategoriesViewSet(viewsets.ReadOnlyModelViewSet):
+    def get_object(self, queryset=None):
+        return get_object_or_404(
+            Genres,
+            slug=self.kwargs['pk'],
+        )
+
+
+class CategoriesViewSet(viewsets.ModelViewSet):
     queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
     permission_classes = (IsAdminOrReadOnly,)
     search_fields = ('name',)
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(
+            Genres,
+            slug=self.kwargs['pk'],
+        )
