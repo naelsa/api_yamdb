@@ -6,7 +6,7 @@ class UserSerializer(serializers.ModelSerializer):
     """Сериализатор пользователей."""
 
     class Meta:
-        fields = '__all__',
+        fields = '__all__'
         exclude = ('confirmation_code',)
         model = User
 
@@ -32,4 +32,3 @@ class RegTokSerializer(serializers.ModelSerializer):
 
     username = serializers.CharField(max_length=150)
     confirmation_code = serializers.CharField(max_length=254)
-    
