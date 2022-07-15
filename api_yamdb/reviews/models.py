@@ -7,7 +7,9 @@ from users.models import User
 
 class Review(models.Model):
     """Отзыв"""
-    text = models.TextField(verbose_name='Отзыв')
+    text = models.TextField(
+        verbose_name='Отзыв'
+    )
     author = models.ForeignKey(
         User,
         verbose_name='Автор',
@@ -33,12 +35,19 @@ class Review(models.Model):
     pub_date = models.DateTimeField(
         'Дата публикации',
         auto_now_add=True,
+        db_index=True
     )
 
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
         ordering = ['-pub_date']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['title', 'author'],
+                name='unique_review'
+            ),
+        ]
 
     def __str__(self):
         return f'Отзыв от {self.author} на {self.title}'
@@ -62,11 +71,13 @@ class Comment(models.Model):
     pub_date = models.DateTimeField(
         'Дата публикации',
         auto_now_add=True,
+        db_index=True
     )
 
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+        ordering = ['pub_date']
 
     def __str__(self):
         return f'Комментарий от {self.author} к {self.review}'
