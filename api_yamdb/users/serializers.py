@@ -14,6 +14,8 @@ class UserSerializer(serializers.ModelSerializer):
 class RegistrationSerializer(serializers.ModelSerializer):
     """Сериализатор для регистрации."""
 
+    email = serializers.EmailField(required=True)
+
     class Meta:
         fields = ('email', 'username')
         model = User
@@ -25,8 +27,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return data
 
 
-class RegTokenSerializer(serializers.Serializer):
+class RegTokSerializer(serializers.ModelSerializer):
     """Сериализатор токена."""
 
     username = serializers.CharField(max_length=150)
     confirmation_code = serializers.CharField(max_length=254)
+    

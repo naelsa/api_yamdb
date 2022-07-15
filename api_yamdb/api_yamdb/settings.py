@@ -125,7 +125,20 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
 
 AUTH_USER_MODEL = 'users.User'
 
+USER_ROLE_USER = 'user'
+USER_ROLE_MODERATOR = 'moderator'
+USER_ROLE_ADMIN = 'admin'
+USER_ROLE_CHOICES = (
+        (USER_ROLE_USER, 'Пользователь'),
+        (USER_ROLE_MODERATOR, 'Модератор'),
+        (USER_ROLE_ADMIN, 'Админ'),
+)
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+EMAIL = 'FakeTest@mail.ru'

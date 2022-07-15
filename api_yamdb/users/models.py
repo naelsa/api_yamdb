@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+from api_yamdb import settings
 from .generate_code import generate_confirmation_code
 
 
@@ -36,20 +37,10 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('username',)
 
-    USER_ROLE_USER = 'user'
-    USER_ROLE_MODERATOR = 'moderator'
-    USER_ROLE_ADMIN = 'admin'
-
-    USER_ROLE_CHOICES = (
-        (USER_ROLE_USER, 'Пользователь'),
-        (USER_ROLE_MODERATOR, 'Модератор'),
-        (USER_ROLE_ADMIN, 'Админ'),
-    )
-
     role = models.CharField(
-        max_length=19,
-        choices=USER_ROLE_CHOICES,
-        default='user'
+        max_length=13,
+        choices=settings.USER_ROLE_CHOICES,
+        default=settings.USER_ROLE_USER
     )
 
     class Meta:
@@ -59,8 +50,8 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.role == self.USER_ROLE_ADMIN or self.is_superuser
+        return self.role == settings.USER_ROLE_ADMIN or self.is_superuser
 
     @property
     def is_moderator(self):
-        return self.role == self.USER_ROLE_MODERATOR
+        return self.role == settings.USER_ROLE_MODERATOR
