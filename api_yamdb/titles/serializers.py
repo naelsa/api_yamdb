@@ -1,20 +1,18 @@
 from rest_framework.relations import SlugRelatedField
 
-from models import Categories, Genres, Titles
+from .models import Categories, Genres, Titles
 from rest_framework import serializers
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categories
-        fields = '__all__'
         exclude = ("id",)
 
 
 class GenresSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genres
-        fields = '__all__'
         exclude = ("id",)
 
 

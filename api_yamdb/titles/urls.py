@@ -12,7 +12,5 @@ v1_router.register(r'titles/(?P<id>[\w]+)/', TitlesViewSet,
 
 app_name = 'api'
 urlpatterns = [
-    path('v1/titles/', include(v1_router.urls)),
-    path('v1/genres/', include(v1_router.urls)),
-    path('v1/categories/', include(v1_router.urls)),
+    path('v1/', include(v1_router.urls)),
 ]
