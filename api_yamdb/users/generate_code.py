@@ -1,9 +1,18 @@
-import string
-import random
-
-CONFIRMATION_CODE_LEN = 10
+import uuid
+from django.conf import settings
+from django.core.mail import send_mail
 
 
 def generate_confirmation_code():
-    return ''.join(random.choices(string.digits + string.ascii_uppercase,
-                                  k=CONFIRMATION_CODE_LEN))
+    return uuid.uuid1()
+
+
+def send_mail_to_user(email, confirmation_code):
+    send_mail(
+        subject='Регистрация на Yamdb, код подтверждения',
+        message=('Спасибо за регистрацию.',
+                 f'Код подтверждения: {confirmation_code}'),
+        from_email=settings.EMAIL,
+        recipient_list=[email],
+        fail_silently=False,
+    )
