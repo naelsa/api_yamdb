@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Titles, Genres, Categories
 from .permissions import IsAdminOrReadOnly
@@ -10,7 +11,7 @@ from .serializers import (TitlesSerializer, GenresSerializer,
 class TitlesViewSet(viewsets.ModelViewSet):
     queryset = Titles.objects.all()
     serializer_class = TitlesSerializer
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly, IsAdminOrReadOnly,)
 
 
 class TitlesObjectViewSet(viewsets.ModelViewSet):
