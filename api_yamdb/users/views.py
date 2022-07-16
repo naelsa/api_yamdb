@@ -1,6 +1,4 @@
-from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, filters
 from rest_framework.decorators import action, api_view
@@ -12,8 +10,7 @@ from users.serializers import (UserSerializer, RegistrationSerializer,
                                RegTokSerializer)
 from users.permissions import (IsAdmin,
                                IsSuperuser, )
-from rest_framework.viewsets import ModelViewSet
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -45,23 +42,17 @@ class UserViewSet(viewsets.ModelViewSet):
 def signup_user(request):
     serializer = RegistrationSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-   # username = serializer.validated_data.get('username')
-    #email = serializer.validated_data.get('email')
-    user = User.objects.get_or_create(
-        username=serializer.validated_data.get('username'),
-        email=serializer.validated_data.get('email'))
     serializer.save()
+    username = serializer.validated_data.get('username')
+    email = serializer.validated_data.get('email')
+    user, _ = User.objects.get_or_create(
+        username=username,
+        email=email
+    )
     confirmation_code = generate_confirmation_code()
     if serializer.validated_data['email'] == user.email:
-        send_mail(
-            subject='Регистрация на Yamdb, код подтверждения',
-            message=('Спасибо за регистрацию.',
-                     f'Код подтверждения: {confirmation_code}'),
-            from_email=settings.EMAIL,
-            recipient_list=[email],
-            fail_silently=False,
-        )
-        return Response(f'Код отправлен на адрес {email}',
+        send_mail_to_user(email, confirmation_code)
+        return Response(serializer.data,
                         status=status.HTTP_200_OK)
     return Response('Почта указана неверно!',
                     status=status.HTTP_400_BAD_REQUEST)
