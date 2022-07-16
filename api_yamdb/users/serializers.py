@@ -1,3 +1,5 @@
+from rest_framework.validators import UniqueValidator
+
 from .models import User
 from rest_framework import serializers
 
@@ -12,8 +14,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 class RegistrationSerializer(serializers.ModelSerializer):
     """Сериализатор для регистрации."""
-
-    email = serializers.EmailField(required=True)
+    username = serializers.CharField(
+        validators=(UniqueValidator(queryset=User.objects.all()),),
+        required=True
+    )
+    email = serializers.EmailField(
+        validators=(UniqueValidator(queryset=User.objects.all()),),
+        required=True
+    )
 
     class Meta:
         fields = ('email', 'username')
@@ -26,8 +34,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return data
 
 
-class RegTokSerializer(serializers.ModelSerializer):
+class RegTokSerializer(serializers.Serializer):
     """Сериализатор токена."""
-
     username = serializers.CharField(max_length=150)
     confirmation_code = serializers.CharField(max_length=254)
