@@ -10,8 +10,8 @@ def generate_confirmation_code():
 def send_mail_to_user(email, confirmation_code):
     send_mail(
         subject='Регистрация на Yamdb, код подтверждения',
-        message=('Спасибо за регистрацию.',
-                 f'Код подтверждения: {confirmation_code}'),
+        message='Спасибо за регистрацию в нашем сервисе. '
+                f'Код подтверждения: {confirmation_code}',
         from_email=settings.EMAIL,
         recipient_list=[email],
         fail_silently=False,
