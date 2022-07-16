@@ -1,16 +1,20 @@
+from django.conf import settings
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, filters
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 
+from users.generate_code import generate_confirmation_code, send_mail_to_user
 from users.models import User
 from users.serializers import (UserSerializer, RegistrationSerializer,
                                RegTokSerializer)
-from users.permissions import (IsAdmin, IsModerator,
-                               IsSuperuser, IsAdminOrReadOnly)
-from rest_framework.views import APIView
+from users.permissions import (IsAdmin,
+                               IsSuperuser, )
 from rest_framework.viewsets import ModelViewSet
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework.permissions import IsAuthenticated
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -39,7 +43,43 @@ class UserViewSet(viewsets.ModelViewSet):
 
 @api_view(['POST'])
 def signup_user(request):
-    serializer = RegTokSerializer(data=request.data)
+    serializer = RegistrationSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    username = serializer.validated_data.get('username')
-    email = serializer.validated_data.get('email')
+   # username = serializer.validated_data.get('username')
+    #email = serializer.validated_data.get('email')
+    user = User.objects.get_or_create(
+        username=serializer.validated_data.get('username'),
+        email=serializer.validated_data.get('email'))
+    serializer.save()
+    confirmation_code = generate_confirmation_code()
+    if serializer.validated_data['email'] == user.email:
+        send_mail(
+            subject='Регистрация на Yamdb, код подтверждения',
+            message=('Спасибо за регистрацию.',
+                     f'Код подтверждения: {confirmation_code}'),
+            from_email=settings.EMAIL,
+            recipient_list=[email],
+            fail_silently=False,
+        )
+        return Response(f'Код отправлен на адрес {email}',
+                        status=status.HTTP_200_OK)
+    return Response('Почта указана неверно!',
+                    status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def get_token(request):
+    serializer = RegTokSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    username = serializer.data['username']
+    user = get_object_or_404(User, username=username)
+    confirmation_code = serializer.data['confirmation_code']
+    if not default_token_generator.check_token(user, confirmation_code):
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    token = RefreshToken.for_user(user)
+    return Response(
+        {'token': str(token.access_token)}, status=status.HTTP_200_OK
+    )
