@@ -24,7 +24,7 @@ class Titles(models.Model):
     """Произведения, к которым пишут отзывы."""
     name = models.CharField(max_length=256)
     year = models.IntegerField(validators=[validate_year])
-    description = models.CharField(max_length=256)
+    description = models.CharField(max_length=256, null=True)
     genre = models.ManyToManyField(
         Genres, related_name="titles",
         blank=True
