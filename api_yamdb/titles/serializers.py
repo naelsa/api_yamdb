@@ -1,8 +1,6 @@
 from rest_framework import serializers
-from rest_framework.fields import IntegerField
 from rest_framework.relations import SlugRelatedField
 
-from reviews.models import Review
 from .models import Categories, Genres, Title
 
 

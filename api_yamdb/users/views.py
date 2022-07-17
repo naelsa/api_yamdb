@@ -2,16 +2,18 @@ from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, filters
 from rest_framework.decorators import action, api_view
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from users.generate_code import generate_confirmation_code, send_mail_to_user
 from users.models import User
-from users.serializers import (UserSerializer, RegistrationSerializer,
-                               RegTokSerializer)
-from users.permissions import (IsAdmin,
-                               IsSuperuser, )
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated
+from users.permissions import (
+    IsAdmin, IsSuperuser,
+)
+from users.serializers import (
+    UserSerializer, RegistrationSerializer, RegTokSerializer
+)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -29,8 +31,9 @@ class UserViewSet(viewsets.ModelViewSet):
         if request.method != 'PATCH':
             serializer = self.get_serializer(request.user)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        serializer = self.get_serializer(request.user, data=request.data,
-                                         partial=True)
+        serializer = self.get_serializer(
+            request.user, data=request.data, partial=True
+        )
         serializer.is_valid(raise_exception=True)
         if serializer.validated_data.get('role'):
             serializer.validated_data['role'] = request.user.role

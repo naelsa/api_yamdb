@@ -13,7 +13,8 @@ from .serializers import (TitlesSerializer, GenresSerializer,
 
 
 class TitlesViewSet(viewsets.ModelViewSet):
-    queryset = Title.objects.annotate(rating=Avg('reviews__score')).order_by('id')
+    queryset = Title.objects.annotate(
+        rating=Avg('reviews__score')).order_by('id')
     permission_classes = (IsAuthenticatedOrReadOnly, IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend, SearchFilter)
     filterset_class = TitleFilter
