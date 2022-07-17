@@ -1,28 +1,25 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Titles, Genres, Categories
 from .permissions import IsAdminOrReadOnly
 from .serializers import (TitlesSerializer, GenresSerializer,
-                          CategoriesSerializer, TitlesObjectSerializer)
+                          CategoriesSerializer, TitlesCreateSerializer)
 
 
 class TitlesViewSet(viewsets.ModelViewSet):
     queryset = Titles.objects.all()
-    serializer_class = TitlesSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsAdminOrReadOnly,)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('genre', 'category', 'name')
 
-
-class TitlesObjectViewSet(viewsets.ModelViewSet):
-    queryset = Titles.objects.all()
-    serializer_class = TitlesObjectSerializer
-    permission_classes = (IsAdminOrReadOnly,)
-
-    def get_object(self):
-        id = self.kwargs.get("id")
-        print(f'вот такой id нашел {id}')
-        return get_object_or_404(Titles, id=id)
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return TitlesCreateSerializer
+        if self.action == 'partial_update':
+            return TitlesCreateSerializer
+        return TitlesSerializer
 
 
 class GenresViewSet(viewsets.ModelViewSet):
@@ -32,10 +29,7 @@ class GenresViewSet(viewsets.ModelViewSet):
     search_fields = ('name',)
 
     def get_object(self, queryset=None):
-        return get_object_or_404(
-            Genres,
-            slug=self.kwargs['pk'],
-        )
+        return Genres.objects.get(slug=self.kwargs['pk'])
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
@@ -45,7 +39,5 @@ class CategoriesViewSet(viewsets.ModelViewSet):
     search_fields = ('name',)
 
     def get_object(self, queryset=None):
-        return get_object_or_404(
-            Genres,
-            slug=self.kwargs['pk'],
-        )
+        slug = self.kwargs['pk']
+        return Categories.objects.get(slug=slug)
