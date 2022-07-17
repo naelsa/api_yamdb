@@ -8,5 +8,5 @@ class IsAuthor(BasePermission):
             return True
         return (request.user.role in (
             settings.USER_ROLE_ADMIN, settings.USER_ROLE_MODERATOR)
-                or request.user.is_superuser
-                or obj.author == request.user)
+            or request.user.is_superuser
+            or obj.author == request.user)
