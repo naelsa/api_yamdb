@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 
-from .models import Categories, Genres, Titles
+from .models import Categories, Genres, Title
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
@@ -21,7 +21,7 @@ class TitlesSerializer(serializers.ModelSerializer):
     category = CategoriesSerializer()
 
     class Meta:
-        model = Titles
+        model = Title
         fields = '__all__'
 
 
@@ -39,17 +39,17 @@ class TitlesCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         genres = validated_data.pop('genre')
         category = validated_data.pop('category')
-        title = Titles.objects.create(
+        title = Title.objects.create(
             **validated_data, category=category)
         for genre in genres:
             title.genre.add(genre)
         return title
 
     def update(self, instance, validated_data):
-        Titles.objects.filter(id=instance.id).update(**validated_data)
-        title = Titles.objects.get(id=instance.id)
+        Title.objects.filter(id=instance.id).update(**validated_data)
+        title = Title.objects.get(id=instance.id)
         return title
 
     class Meta:
-        model = Titles
+        model = Title
         fields = '__all__'

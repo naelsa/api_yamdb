@@ -20,7 +20,7 @@ class Genres(models.Model):
         return self.name
 
 
-class Titles(models.Model):
+class Title(models.Model):
     """Произведения, к которым пишут отзывы."""
     name = models.CharField(max_length=256)
     year = models.IntegerField(validators=[validate_year])

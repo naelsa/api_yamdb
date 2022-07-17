@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
 from reviews.models import Comment, Review
-from titles.models import Titles
+from titles.models import Title
 
 
 class ReviewsSerializer(serializers.ModelSerializer):
@@ -22,7 +22,7 @@ class ReviewsSerializer(serializers.ModelSerializer):
     def validate(self, data):
         request = self.context['request']
         current_title = get_object_or_404(
-            Titles, pk=request.parser_context['kwargs'].get('title_id'))
+            Title, pk=request.parser_context['kwargs'].get('title_id'))
 
         if request.method == 'POST':
             if current_title.reviews.filter(author=request.user).exists():

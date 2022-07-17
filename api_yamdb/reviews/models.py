@@ -1,7 +1,7 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from titles.models import Titles
+from titles.models import Title
 from users.models import User
 
 
@@ -27,7 +27,7 @@ class Review(models.Model):
         null=False
     )
     title = models.ForeignKey(
-        Titles,
+        Title,
         verbose_name='Произведение',
         on_delete=models.CASCADE,
         related_name='reviews',
