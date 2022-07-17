@@ -1,14 +1,15 @@
 from django.conf import settings
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 
 
 class User(AbstractUser):
     """Кастомный пользователь с дополнительными полями."""
-    username = models.CharField(max_length=150,
-                                unique=True,
-                                verbose_name='Имя пользователя'
-                                )
+    username = models.CharField(
+        max_length=150,
+        unique=True,
+        verbose_name='Имя пользователя'
+    )
     email = models.EmailField(
         max_length=254,
         unique=True,

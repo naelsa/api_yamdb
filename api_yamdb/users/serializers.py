@@ -1,14 +1,16 @@
+from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from .models import User
-from rest_framework import serializers
 
 
 class UserSerializer(serializers.ModelSerializer):
     """Сериализатор пользователей."""
 
     class Meta:
-        fields = ('username', 'email', 'bio', 'first_name', 'last_name', 'role',)
+        fields = (
+            'username', 'email', 'bio', 'first_name', 'last_name', 'role',
+        )
         model = User
 
 
