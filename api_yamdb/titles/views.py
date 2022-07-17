@@ -2,6 +2,7 @@ from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .filters import TitleFilter
@@ -18,6 +19,7 @@ class TitlesViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly, IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend, SearchFilter)
     filterset_class = TitleFilter
+    pagination_class = PageNumberPagination
 
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):
@@ -26,8 +28,9 @@ class TitlesViewSet(viewsets.ModelViewSet):
 
 
 class GenresViewSet(CreateListDestroyViewSet):
-    queryset = Genres.objects.all()
+    queryset = Genres.objects.all().order_by('id')
     serializer_class = GenresSerializer
+    pagination_class = PageNumberPagination
     permission_classes = (IsAdminOrReadOnly,)
     search_fields = ('name',)
 
@@ -36,8 +39,9 @@ class GenresViewSet(CreateListDestroyViewSet):
 
 
 class CategoriesViewSet(CreateListDestroyViewSet):
-    queryset = Categories.objects.all()
+    queryset = Categories.objects.all().order_by('id')
     serializer_class = CategoriesSerializer
+    pagination_class = PageNumberPagination
     permission_classes = (IsAdminOrReadOnly,)
     search_fields = ('name',)
 
