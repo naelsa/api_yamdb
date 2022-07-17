@@ -1,6 +1,8 @@
 from rest_framework import serializers
+from rest_framework.fields import IntegerField
 from rest_framework.relations import SlugRelatedField
 
+from reviews.models import Review
 from .models import Categories, Genres, Title
 
 
@@ -8,21 +10,25 @@ class CategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categories
         exclude = ("id",)
+        lookup_field = 'slug'
 
 
 class GenresSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genres
         exclude = ("id",)
+        lookup_field = 'slug'
 
 
 class TitlesSerializer(serializers.ModelSerializer):
-    genre = GenresSerializer(many=True,)
+    genre = GenresSerializer(many=True, )
     category = CategoriesSerializer()
+    rating = serializers.IntegerField(read_only=True,)
 
     class Meta:
         model = Title
-        fields = '__all__'
+        fields = ('id', 'name', 'year', 'rating',
+                  'description', 'genre', 'category')
 
 
 class TitlesCreateSerializer(serializers.ModelSerializer):
