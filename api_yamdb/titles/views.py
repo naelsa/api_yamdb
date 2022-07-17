@@ -3,14 +3,14 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .mixins import CreateListDestroyViewSet
-from .models import Titles, Genres, Categories
+from .models import Title, Genres, Categories
 from .permissions import IsAdminOrReadOnly
 from .serializers import (TitlesSerializer, GenresSerializer,
                           CategoriesSerializer, TitlesCreateSerializer)
 
 
 class TitlesViewSet(viewsets.ModelViewSet):
-    queryset = Titles.objects.all()
+    queryset = Title.objects.all()
     permission_classes = (IsAuthenticatedOrReadOnly, IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('genre', 'category', 'name')
