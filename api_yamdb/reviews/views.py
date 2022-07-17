@@ -10,7 +10,7 @@ from .serializers import CommentsSerializer, ReviewsSerializer
 
 class ReviewViewSet(ModelViewSet):
     serializer_class = ReviewsSerializer
-    permission_classes = [IsAuthor, IsAuthenticatedOrReadOnly]
+    permission_classes = (IsAuthenticatedOrReadOnly, IsAuthor,)
 
     def get_queryset(self):
         title = get_object_or_404(Titles, pk=self.kwargs.get('title_id'))
@@ -26,7 +26,7 @@ class ReviewViewSet(ModelViewSet):
 
 class CommentViewSet(ModelViewSet):
     serializer_class = CommentsSerializer
-    permission_classes = [IsAuthor, IsAuthenticatedOrReadOnly]
+    permission_classes = (IsAuthenticatedOrReadOnly, IsAuthor,)
 
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')

@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
 
+from .mixins import CreateListDestroyViewSet
 from .models import Titles, Genres, Categories
 from .permissions import IsAdminOrReadOnly
 from .serializers import (TitlesSerializer, GenresSerializer,
@@ -22,7 +23,7 @@ class TitlesViewSet(viewsets.ModelViewSet):
         return TitlesSerializer
 
 
-class GenresViewSet(viewsets.ModelViewSet):
+class GenresViewSet(CreateListDestroyViewSet):
     queryset = Genres.objects.all()
     serializer_class = GenresSerializer
     permission_classes = (IsAdminOrReadOnly,)
@@ -32,7 +33,7 @@ class GenresViewSet(viewsets.ModelViewSet):
         return Genres.objects.get(slug=self.kwargs['pk'])
 
 
-class CategoriesViewSet(viewsets.ModelViewSet):
+class CategoriesViewSet(CreateListDestroyViewSet):
     queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
     permission_classes = (IsAdminOrReadOnly,)
