@@ -6,12 +6,12 @@ from django.db import models
 class User(AbstractUser):
     """Кастомный пользователь с дополнительными полями."""
     username = models.CharField(
-        max_length=150,
+        max_length=settings.MAX_LENGTH_USER,
         unique=True,
         verbose_name='Имя пользователя'
     )
     email = models.EmailField(
-        max_length=254,
+        max_length=settings.MAX_LENGTH_EMAIL,
         unique=True,
         verbose_name='Электронная почта'
     )
@@ -20,17 +20,17 @@ class User(AbstractUser):
         verbose_name='Биография'
     )
     confirmation_code = models.CharField(
-        max_length=50,
+        max_length=settings.MAX_LENGTH_CONFIRMATION_CODE,
         blank=True,
         verbose_name='Код для авторизации',
     )
     first_name = models.CharField(
         'Имя',
-        max_length=150,
+        max_length=settings.MAX_LENGTH_NAME,
         blank=True)
     last_name = models.CharField(
         'Фамилия',
-        max_length=150,
+        max_length=settings.MAX_LENGTH_NAME,
         blank=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('username',)
@@ -48,7 +48,7 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.role == settings.USER_ROLE_ADMIN or self.is_superuser
+        return self.role == settings.USER_ROLE_ADMIN or self.is_staff
 
     @property
     def is_moderator(self):

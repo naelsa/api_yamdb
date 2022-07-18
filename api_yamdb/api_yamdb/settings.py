@@ -132,3 +132,8 @@ SIMPLE_JWT = {
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 EMAIL = 'FakeTest@mail.ru'
+
+MAX_LENGTH_USER = 150
+MAX_LENGTH_EMAIL = 254
+MAX_LENGTH_CONFIRMATION_CODE = 50
+MAX_LENGTH_NAME = 150
