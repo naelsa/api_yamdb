@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
+from api_yamdb import settings
+from api_yamdb.settings import MAX_LENGTH_CONFIRMATION_CODE
 from .models import User
 
 
@@ -38,5 +40,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 class RegTokSerializer(serializers.Serializer):
     """Сериализатор токена."""
-    username = serializers.CharField(max_length=150)
-    confirmation_code = serializers.CharField(max_length=254)
+    username = serializers.CharField(max_length=settings.MAX_LENGTH_USER,
+                                     required=True)
+    confirmation_code = serializers.CharField(
+        max_length=MAX_LENGTH_CONFIRMATION_CODE,
+        required=True)

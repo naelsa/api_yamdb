@@ -6,11 +6,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from users.generate_code import generate_confirmation_code, send_mail_to_user
+from users.generate_code import send_mail_to_user
 from users.models import User
-from users.permissions import (
-    IsAdmin, IsSuperuser,
-)
+from users.permissions import IsAdmin
 from users.serializers import (
     UserSerializer, RegistrationSerializer, RegTokSerializer
 )
@@ -20,7 +18,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperuser]
+    permission_classes = [IsAdmin]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('username',)
     lookup_field = 'username'
@@ -38,41 +36,37 @@ class UserViewSet(viewsets.ModelViewSet):
         if serializer.validated_data.get('role'):
             serializer.validated_data['role'] = request.user.role
         serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
 def signup_user(request):
     serializer = RegistrationSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    serializer.save()
     username = serializer.validated_data.get('username')
     email = serializer.validated_data.get('email')
     user, _ = User.objects.get_or_create(
         username=username,
         email=email
     )
-    confirmation_code = generate_confirmation_code()
-    if serializer.validated_data['email'] == user.email:
-        send_mail_to_user(email, confirmation_code)
-        return Response(serializer.data,
-                        status=status.HTTP_200_OK)
-    return Response('Почта указана неверно!',
-                    status=status.HTTP_400_BAD_REQUEST)
+    confirmation_code = default_token_generator
+    user.email
+    send_mail_to_user(email, confirmation_code)
+    return Response(serializer.data,
+                    status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
 def get_token(request):
     serializer = RegTokSerializer(data=request.data)
-    if not serializer.is_valid():
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    username = serializer.data['username']
+    serializer.is_valid(raise_exception=True)
+    username = serializer.data.get('username')
     user = get_object_or_404(User, username=username)
-    confirmation_code = serializer.data['confirmation_code']
+    confirmation_code = serializer.data.get('confirmation_code')
     if not default_token_generator.check_token(user, confirmation_code):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    user.is_active = True
+    serializer.save()
     token = RefreshToken.for_user(user)
     return Response(
         {'token': str(token.access_token)}, status=status.HTTP_200_OK
