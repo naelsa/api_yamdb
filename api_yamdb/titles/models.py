@@ -1,23 +1,29 @@
 from django.db import models
+
 from .validators import validate_year
 
 
-class Categories(models.Model):
+class BaseModel(models.Model):
+    """Базовый класс для категорий и жанров."""
+    name = models.CharField(max_length=256)
+    slug = models.SlugField(unique=True, max_length=50)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        abstract = True
+        ordering = ['name']
+
+
+class Categories(BaseModel):
     """Категории (типы) произведений."""
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(unique=True, max_length=50)
-
-    def __str__(self):
-        return self.name
+    pass
 
 
-class Genres(models.Model):
+class Genres(BaseModel):
     """Категории жанров."""
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(unique=True, max_length=50)
-
-    def __str__(self):
-        return self.name
+    pass
 
 
 class Title(models.Model):

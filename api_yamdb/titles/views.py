@@ -1,7 +1,5 @@
 from django.db.models import Avg
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
-from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .filters import TitleFilter
@@ -14,33 +12,22 @@ from .serializers import (TitlesSerializer, GenresSerializer,
 
 class TitlesViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.annotate(
-        rating=Avg('reviews__score')).order_by('id')
+        rating=Avg('reviews__score')).order_by('name', )
     permission_classes = (IsAuthenticatedOrReadOnly, IsAdminOrReadOnly,)
-    filter_backends = (DjangoFilterBackend, SearchFilter)
     filterset_class = TitleFilter
+    ordering_fields = ['name']
 
     def get_serializer_class(self):
-        if self.action in ('create', 'update', 'partial_update'):
-            return TitlesCreateSerializer
-        return TitlesSerializer
+        if self.action in ('list', 'retrieve',):
+            return TitlesSerializer
+        return TitlesCreateSerializer
 
 
 class GenresViewSet(CreateListDestroyViewSet):
-    queryset = Genres.objects.all()
+    queryset = Genres.objects.all().order_by('name')
     serializer_class = GenresSerializer
-    permission_classes = (IsAdminOrReadOnly,)
-    search_fields = ('name',)
-
-    def get_object(self, queryset=None):
-        return Genres.objects.get(slug=self.kwargs['pk'])
 
 
 class CategoriesViewSet(CreateListDestroyViewSet):
-    queryset = Categories.objects.all()
+    queryset = Categories.objects.all().order_by('name')
     serializer_class = CategoriesSerializer
-    permission_classes = (IsAdminOrReadOnly,)
-    search_fields = ('name',)
-
-    def get_object(self, queryset=None):
-        slug = self.kwargs['pk']
-        return Categories.objects.get(slug=slug)
