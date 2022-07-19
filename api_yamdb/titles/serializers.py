@@ -40,20 +40,6 @@ class TitlesCreateSerializer(serializers.ModelSerializer):
         queryset=Categories.objects.all(),
     )
 
-    def create(self, validated_data):
-        genres = validated_data.pop('genre')
-        category = validated_data.pop('category')
-        title = Title.objects.create(
-            **validated_data, category=category)
-        for genre in genres:
-            title.genre.add(genre)
-        return title
-
-    def update(self, instance, validated_data):
-        Title.objects.filter(id=instance.id).update(**validated_data)
-        title = Title.objects.get(id=instance.id)
-        return title
-
     class Meta:
         model = Title
         fields = '__all__'
