@@ -22,9 +22,7 @@ class Review(models.Model):
         validators=[
             MinValueValidator(1, message='Минимальная оценка 1'),
             MaxValueValidator(10, message='Максимальная оценка 10')
-        ],
-        blank=False,
-        null=False
+        ]
     )
     title = models.ForeignKey(
         Title,
@@ -41,7 +39,7 @@ class Review(models.Model):
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
-        ordering = ['-pub_date']
+        ordering = ('-pub_date', )
         constraints = [
             models.UniqueConstraint(
                 fields=['title', 'author'],
@@ -77,7 +75,7 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
-        ordering = ['pub_date']
+        ordering = ('pub_date', )
 
     def __str__(self):
         return f'Комментарий от {self.author} к {self.review}'
