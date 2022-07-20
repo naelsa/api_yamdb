@@ -8,7 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from users.generate_code import send_mail_to_user
 from users.models import User
-from users.permissions import IsAdmin
+from users.permissions import IsAdminOrStaff
 from users.serializers import (
     UserSerializer, RegistrationSerializer, RegTokSerializer
 )
@@ -18,7 +18,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAdminOrStaff]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('username',)
     lookup_field = 'username'
