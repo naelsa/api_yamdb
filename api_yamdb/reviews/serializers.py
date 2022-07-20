@@ -17,13 +17,14 @@ class ReviewsSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         request = self.context['request']
+        if request.method != 'POST':
+            return data
         current_title = get_object_or_404(
-            Title, pk=request.parser_context['kwargs'].get('title_id'))
-
-        if request.method == 'POST':
-            if current_title.reviews.filter(author=request.user).exists():
-                raise serializers.ValidationError(
-                    'Вы не можете добавить более одного отзыва на произведение'
+            Title, pk=request.parser_context['kwargs'].get('title_id')
+        )
+        if current_title.reviews.filter(author=request.user).exists():
+            raise serializers.ValidationError(
+                'Вы не можете добавить более одного отзыва на произведение'
                 )
         return data
 
