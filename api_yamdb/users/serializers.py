@@ -3,6 +3,7 @@ from rest_framework.validators import UniqueValidator
 
 from api_yamdb import settings
 from api_yamdb.settings import MAX_LENGTH_CONFIRMATION_CODE
+from .validators import NotMeValidator
 from .models import User
 
 
@@ -30,12 +31,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('email', 'username')
         model = User
-
-    def validate(self, data):
-        """Проверка, что имя 'Me' запрещено."""
-        if data.get('username') == 'me':
-            raise serializers.ValidationError("Имя не может быть 'me'")
-        return data
+        validators = [NotMeValidator(), ]
 
 
 class RegTokSerializer(serializers.Serializer):

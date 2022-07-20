@@ -18,12 +18,14 @@ class BaseModel(models.Model):
 
 class Categories(BaseModel):
     """Категории (типы) произведений."""
-    pass
+    class Meta(BaseModel.Meta):
+        verbose_name = 'Категории'
 
 
 class Genres(BaseModel):
     """Категории жанров."""
-    pass
+    class Meta(BaseModel.Meta):
+        verbose_name = 'Жанры'
 
 
 class Title(models.Model):
@@ -45,3 +47,4 @@ class Title(models.Model):
 
     class Meta:
         ordering = ['name']
+        verbose_name = 'Произведения'

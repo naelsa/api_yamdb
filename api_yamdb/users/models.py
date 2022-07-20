@@ -36,7 +36,8 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ('username',)
 
     role = models.CharField(
-        max_length=13,
+        max_length=len(max(
+            [role[1] for role in settings.USER_ROLE_CHOICES], key=len)),
         choices=settings.USER_ROLE_CHOICES,
         default=settings.USER_ROLE_USER
     )
