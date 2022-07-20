@@ -5,17 +5,31 @@ from titles.models import Title
 from users.models import User
 
 
-class Review(models.Model):
-    """Отзыв"""
+class BaseAbstractModel(models.Model):
+    """Базовая модель."""
     text = models.TextField(
-        verbose_name='Отзыв'
+        verbose_name='Подробное название'
     )
     author = models.ForeignKey(
         User,
         verbose_name='Автор',
         on_delete=models.CASCADE,
-        related_name='reviews'
     )
+    pub_date = models.DateTimeField(
+        'Дата публикации',
+        auto_now_add=True,
+        db_index=True
+    )
+
+    class Meta:
+        abstract = True
+        verbose_name = 'Подробное название'
+        verbose_name_plural = 'Подробное название во множественном числе'
+        ordering = ('pub_date',)
+
+
+class Review(BaseAbstractModel):
+    """Отзыв"""
     score = models.PositiveSmallIntegerField(
         verbose_name='Оценка',
         default=1,
@@ -30,16 +44,10 @@ class Review(models.Model):
         on_delete=models.CASCADE,
         related_name='reviews',
     )
-    pub_date = models.DateTimeField(
-        'Дата публикации',
-        auto_now_add=True,
-        db_index=True
-    )
 
-    class Meta:
+    class Meta(BaseAbstractModel.Meta):
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
-        ordering = ('-pub_date', )
         constraints = [
             models.UniqueConstraint(
                 fields=['title', 'author'],
@@ -51,31 +59,18 @@ class Review(models.Model):
         return f'Отзыв от {self.author} на {self.title}'
 
 
-class Comment(models.Model):
+class Comment(BaseAbstractModel):
     """Комментарий к отзыву."""
-    text = models.TextField(verbose_name='Комментарий')
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='comments',
-        verbose_name='Автор'
-    )
     review = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='Отзыв'
     )
-    pub_date = models.DateTimeField(
-        'Дата публикации',
-        auto_now_add=True,
-        db_index=True
-    )
 
-    class Meta:
+    class Meta(BaseAbstractModel.Meta):
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
-        ordering = ('pub_date', )
 
     def __str__(self):
         return f'Комментарий от {self.author} к {self.review}'
