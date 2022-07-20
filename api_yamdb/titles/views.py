@@ -24,10 +24,10 @@ class TitlesViewSet(viewsets.ModelViewSet):
 
 
 class GenresViewSet(CreateListDestroyViewSet):
-    queryset = Genres.objects.all().order_by('name')
+    queryset = Genres.objects.all()
     serializer_class = GenresSerializer
 
 
 class CategoriesViewSet(CreateListDestroyViewSet):
-    queryset = Categories.objects.all().order_by('name')
+    queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
