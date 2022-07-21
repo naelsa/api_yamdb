@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 
@@ -9,4 +10,3 @@ class IsAuthorModeratorAdminSuperuser(BasePermission):
             settings.USER_ROLE_ADMIN, settings.USER_ROLE_MODERATOR)
             or request.user.is_superuser
             or obj.author == request.user)
-

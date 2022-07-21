@@ -1,9 +1,9 @@
 from django.contrib import admin
 
-from users.mixins import CustomEmptyMixin
-from users.models import User
 from reviews.models import Review, Comment
 from titles.models import Categories, Genres, Title
+from users.models import User
+from .mixins import CustomEmptyMixin
 
 
 class UserAdmin(CustomEmptyMixin, admin.ModelAdmin):
