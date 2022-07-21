@@ -95,7 +95,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 7,
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
-        'rest_framework.filters.SearchFilter',],
+        'rest_framework.filters.SearchFilter', ],
 }
 
 LANGUAGE_CODE = 'ru-ru'
@@ -118,11 +118,10 @@ AUTH_USER_MODEL = 'users.User'
 USER_ROLE_USER = 'user'
 USER_ROLE_MODERATOR = 'moderator'
 USER_ROLE_ADMIN = 'admin'
-USER_ROLE_CHOICES = (
-        (USER_ROLE_USER, 'Пользователь'),
-        (USER_ROLE_MODERATOR, 'Модератор'),
-        (USER_ROLE_ADMIN, 'Админ'),
-)
+USER_ROLE_CHOICES = ((USER_ROLE_USER, 'Пользователь'),
+                     (USER_ROLE_MODERATOR, 'Модератор'),
+                     (USER_ROLE_ADMIN, 'Админ'),
+                     )
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
@@ -137,3 +136,6 @@ MAX_LENGTH_USER = 150
 MAX_LENGTH_EMAIL = 254
 MAX_LENGTH_CONFIRMATION_CODE = 50
 MAX_LENGTH_NAME = 150
+MAX_LENGTH_TITLE_NAME = 256
+MAX_LENGTH_SLUG = 50
+MAX_LENGTH_DESCRIPTION = 256
