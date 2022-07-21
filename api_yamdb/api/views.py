@@ -58,7 +58,7 @@ def signup_user(request):
         username=username,
         email=email
     )
-    confirmation_code = default_token_generator
+    confirmation_code = default_token_generator.make_token(user)
     user.email
     send_mail_to_user(email, confirmation_code)
     return Response(serializer.data,
@@ -114,14 +114,12 @@ class ReviewViewSet(ModelViewSet):
         return get_object_or_404(Title, pk=self.kwargs.get('title_id'))
 
     def get_queryset(self):
-        title = self.get_title()
-        return title.reviews.all()
+        return self.get_title().reviews.all()
 
     def perform_create(self, serializer):
-        title = self.get_title()
         serializer.save(
             author=self.request.user,
-            title=title,
+            title=self.get_title(),
         )
 
 
@@ -130,20 +128,16 @@ class CommentViewSet(ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,
                           IsAuthorModeratorAdminSuperuser,)
 
-    def get_review_and_title(self):
-        title_id = self.kwargs.get('title_id')
+    def get_review(self):
         review_id = self.kwargs.get('review_id')
         return get_object_or_404(
-            Review.objects.filter(title_id=title_id), pk=review_id
-        )
+            Review.objects.filter(pk=review_id))
 
     def get_queryset(self):
-        review = self.get_review_and_title()
-        return review.comments.all()
+        return self.get_review().comments.all()
 
     def perform_create(self, serializer):
-        review = self.get_review_and_title()
         serializer.save(
             author=self.request.user,
-            review=review
+            review=self.get_review()
         )
