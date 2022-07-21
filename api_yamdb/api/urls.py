@@ -32,6 +32,5 @@ urlpatterns = [
     path('v1/auth/', include(v1_patterns)),
     path('v1/', include(v1_patterns2)),
 ]
-pach
 
 app_name = 'api'
