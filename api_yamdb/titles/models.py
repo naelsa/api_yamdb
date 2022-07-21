@@ -1,30 +1,41 @@
 from django.db import models
+from django.conf import settings
+
 from .validators import validate_year
 
 
-class Categories(models.Model):
+class BaseModel(models.Model):
+    """Базовый класс для категорий и жанров."""
+    name = models.CharField(max_length=settings.MAX_LENGTH_TITLE_NAME)
+    slug = models.SlugField(unique=True, max_length=settings.MAX_LENGTH_SLUG)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        abstract = True
+        ordering = ['name']
+
+
+class Categories(BaseModel):
     """Категории (типы) произведений."""
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(unique=True, max_length=50)
-
-    def __str__(self):
-        return self.name
+    class Meta(BaseModel.Meta):
+        verbose_name = 'Категории'
 
 
-class Genres(models.Model):
+class Genres(BaseModel):
     """Категории жанров."""
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(unique=True, max_length=50)
-
-    def __str__(self):
-        return self.name
+    class Meta(BaseModel.Meta):
+        verbose_name = 'Жанры'
 
 
 class Title(models.Model):
     """Произведения, к которым пишут отзывы."""
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=settings.MAX_LENGTH_TITLE_NAME)
     year = models.IntegerField(validators=[validate_year])
-    description = models.CharField(max_length=256, null=True)
+    description = models.CharField(
+        max_length=settings.MAX_LENGTH_DESCRIPTION, null=True
+    )
     genre = models.ManyToManyField(
         Genres, related_name="titles",
         blank=True
@@ -36,3 +47,7 @@ class Title(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Произведения'
