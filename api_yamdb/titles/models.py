@@ -4,29 +4,29 @@ from django.conf import settings
 from .validators import validate_year
 
 
-class BaseModel(models.Model):
+class BaseNameSlugModel(models.Model):
     """Базовый класс для категорий и жанров."""
     name = models.CharField(max_length=settings.MAX_LENGTH_TITLE_NAME)
     slug = models.SlugField(unique=True, max_length=settings.MAX_LENGTH_SLUG)
-
-    def __str__(self):
-        return self.name
 
     class Meta:
         abstract = True
         ordering = ('name',)
 
+    def __str__(self):
+        return self.name
 
-class Categories(BaseModel):
+
+class Categories(BaseNameSlugModel):
     """Категории (типы) произведений."""
-    class Meta(BaseModel.Meta):
+    class Meta(BaseNameSlugModel.Meta):
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
 
 
-class Genres(BaseModel):
+class Genres(BaseNameSlugModel):
     """Категории жанров."""
-    class Meta(BaseModel.Meta):
+    class Meta(BaseNameSlugModel.Meta):
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
 
