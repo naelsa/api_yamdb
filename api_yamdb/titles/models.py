@@ -14,19 +14,21 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ['name']
+        ordering = ('name',)
 
 
 class Categories(BaseModel):
     """Категории (типы) произведений."""
     class Meta(BaseModel.Meta):
-        verbose_name = 'Категории'
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
 
 
 class Genres(BaseModel):
     """Категории жанров."""
     class Meta(BaseModel.Meta):
-        verbose_name = 'Жанры'
+        verbose_name = 'Жанр'
+        verbose_name_plural = 'Жанры'
 
 
 class Title(models.Model):
@@ -45,9 +47,10 @@ class Title(models.Model):
         related_name="titles", blank=True, null=True
     )
 
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'Произведение'
+        verbose_name_plural = 'Произведения'
+
     def __str__(self):
         return self.name
-
-    class Meta:
-        ordering = ['name']
-        verbose_name = 'Произведения'

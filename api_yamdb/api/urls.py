@@ -25,12 +25,9 @@ v1_patterns = [
     path('signup/', signup_user, name='auth_signup'),
     path('token/', get_token, name='token'),
 ]
-v1_patterns2 = [
-    path('', include(router_v1.urls)),
-]
 urlpatterns = [
-    path('v1/auth/', include(v1_patterns)),
-    path('v1/', include(v1_patterns2)),
+    path('auth/', include(v1_patterns)),
+    path('', include(router_v1.urls)),
 ]
 
 app_name = 'api'

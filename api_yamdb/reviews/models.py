@@ -27,6 +27,9 @@ class BaseAbstractModel(models.Model):
         verbose_name_plural = 'Подробное название во множественном числе'
         ordering = ('pub_date',)
 
+    def __str__(self):
+        return 'НЕ ПОНЯЛ, ЧТО ЗА ОБРЕЗАННЫЙ ТЕКСТ'
+
 
 class Review(BaseAbstractModel):
     """Отзыв"""
@@ -42,12 +45,12 @@ class Review(BaseAbstractModel):
         Title,
         verbose_name='Произведение',
         on_delete=models.CASCADE,
-        related_name='reviews',
     )
 
     class Meta(BaseAbstractModel.Meta):
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
+        default_related_name = 'reviews'
         constraints = [
             models.UniqueConstraint(
                 fields=['title', 'author'],
@@ -64,13 +67,13 @@ class Comment(BaseAbstractModel):
     review = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,
-        related_name='comments',
         verbose_name='Отзыв'
     )
 
     class Meta(BaseAbstractModel.Meta):
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+        default_related_name = 'comments'
 
     def __str__(self):
         return f'Комментарий от {self.author} к {self.review}'
