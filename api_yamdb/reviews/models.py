@@ -5,7 +5,7 @@ from titles.models import Title
 from users.models import User
 
 
-class BaseAbstractModel(models.Model):
+class BaseTextAuthorPubdateModel(models.Model):
     """Базовая модель."""
     text = models.TextField(
         verbose_name='Подробное название'
@@ -27,11 +27,8 @@ class BaseAbstractModel(models.Model):
         verbose_name_plural = 'Подробное название во множественном числе'
         ordering = ('pub_date',)
 
-    def __str__(self):
-        return 'НЕ ПОНЯЛ, ЧТО ЗА ОБРЕЗАННЫЙ ТЕКСТ'
 
-
-class Review(BaseAbstractModel):
+class Review(BaseTextAuthorPubdateModel):
     """Отзыв"""
     score = models.PositiveSmallIntegerField(
         verbose_name='Оценка',
@@ -47,7 +44,7 @@ class Review(BaseAbstractModel):
         on_delete=models.CASCADE,
     )
 
-    class Meta(BaseAbstractModel.Meta):
+    class Meta(BaseTextAuthorPubdateModel.Meta):
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
         default_related_name = 'reviews'
@@ -62,7 +59,7 @@ class Review(BaseAbstractModel):
         return f'Отзыв от {self.author} на {self.title}'
 
 
-class Comment(BaseAbstractModel):
+class Comment(BaseTextAuthorPubdateModel):
     """Комментарий к отзыву."""
     review = models.ForeignKey(
         Review,
@@ -70,7 +67,7 @@ class Comment(BaseAbstractModel):
         verbose_name='Отзыв'
     )
 
-    class Meta(BaseAbstractModel.Meta):
+    class Meta(BaseTextAuthorPubdateModel.Meta):
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
         default_related_name = 'comments'
