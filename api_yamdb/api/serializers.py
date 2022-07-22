@@ -9,7 +9,6 @@ from reviews.models import Comment, Review
 from titles.models import Title, Categories, Genres
 from titles.validators import validate_year
 from users.models import User
-from .validators import NotMeValidator
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -36,7 +35,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('email', 'username')
         model = User
-        validators = [NotMeValidator(), ]
+
+    def validate_username(self, data):
+        if data.lower() == 'me':
+            raise serializers.ValidationError('Имя не может быть "me".')
+        return data
 
 
 class RegTokSerializer(serializers.Serializer):
