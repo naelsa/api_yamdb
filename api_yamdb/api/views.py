@@ -8,10 +8,10 @@ from rest_framework.permissions import (IsAuthenticated,
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from reviews.models import Review, Title
 from titles.models import Genres, Categories
 from users.models import User
+
 from .filters import TitleFilter
 from .generate_code import send_mail_to_user
 from .mixins import CreateListDestroyViewSet
@@ -87,7 +87,7 @@ class TitlesViewSet(viewsets.ModelViewSet):
         rating=Avg('reviews__score')).order_by('name', )
     permission_classes = (IsAuthenticatedOrReadOnly, IsAdminOrReadOnly,)
     filterset_class = TitleFilter
-    ordering_fields = ['name']
+    ordering_fields = ('name',)
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve',):
@@ -129,9 +129,8 @@ class CommentViewSet(ModelViewSet):
                           IsAuthorModeratorAdminSuperuser,)
 
     def get_review(self):
-        review_id = self.kwargs.get('review_id')
         return get_object_or_404(
-            Review.objects.filter(pk=review_id))
+            Review.objects.filter(pk=self.kwargs.get('review_id')))
 
     def get_queryset(self):
         return self.get_review().comments.all()

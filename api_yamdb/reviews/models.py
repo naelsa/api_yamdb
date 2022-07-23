@@ -1,6 +1,7 @@
+from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-
+from django.utils.text import Truncator
 from titles.models import Title
 from users.models import User
 
@@ -26,6 +27,9 @@ class BaseTextAuthorPubdateModel(models.Model):
         verbose_name = 'Подробное название'
         verbose_name_plural = 'Подробное название во множественном числе'
         ordering = ('pub_date',)
+
+    def __str__(self):
+        return Truncator(self.text).words(settings.NUMBER_WORDS_TRUNC)
 
 
 class Review(BaseTextAuthorPubdateModel):
