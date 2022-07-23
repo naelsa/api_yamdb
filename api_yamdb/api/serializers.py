@@ -1,14 +1,15 @@
+from api_yamdb.settings import MAX_LENGTH_CONFIRMATION_CODE
+from django.conf import settings
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 from rest_framework.relations import SlugRelatedField
 from rest_framework.validators import UniqueValidator
-
-from api_yamdb import settings
-from api_yamdb.settings import MAX_LENGTH_CONFIRMATION_CODE
 from reviews.models import Comment, Review
 from titles.models import Title, Categories, Genres
 from titles.validators import validate_year
 from users.models import User
+
+from api_yamdb import settings
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -115,6 +116,10 @@ class ReviewsSerializer(serializers.ModelSerializer):
         if current_title.reviews.filter(author=request.user).exists():
             raise serializers.ValidationError(
                 'Вы не можете добавить более одного отзыва на произведение'
+            )
+        if not settings.SCORE_MIN <= data.get('score') <= settings.SCORE_MAX:
+            raise serializers.ValidationError(
+                'Рейтинг должен быть в диапазоне от 1 до 10. '
             )
         return data
 
