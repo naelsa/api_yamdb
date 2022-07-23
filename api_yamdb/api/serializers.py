@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 from rest_framework.relations import SlugRelatedField
@@ -110,6 +111,10 @@ class ReviewsSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='username'
     )
+    score = serializers.IntegerField(validators=[
+        MinValueValidator(1, message='Минимальная оценка 1'),
+        MaxValueValidator(10, message='Максимальная оценка 10')
+    ])
 
     class Meta:
         fields = ('id', 'text', 'author', 'score', 'pub_date')
@@ -125,10 +130,6 @@ class ReviewsSerializer(serializers.ModelSerializer):
         if current_title.reviews.filter(author=request.user).exists():
             raise serializers.ValidationError(
                 'Вы не можете добавить более одного отзыва на произведение'
-            )
-        if not settings.SCORE_MIN <= data.get('score') <= settings.SCORE_MAX:
-            raise serializers.ValidationError(
-                'Рейтинг должен быть в диапазоне от 1 до 10. '
             )
         return data
 
