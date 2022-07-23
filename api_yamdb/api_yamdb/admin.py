@@ -11,7 +11,6 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'bio', 'first_name', 'last_name',)
     search_fields = ('username', 'email', 'role',)
     list_filter = ('role',)
-    empty_value_display = '-пусто-'
 
 
 class ReviewAdmin(admin.ModelAdmin):
@@ -19,7 +18,6 @@ class ReviewAdmin(admin.ModelAdmin):
     list_display = ('author', 'score', 'title', 'pub_date',)
     search_fields = ('title',)
     list_filter = ('author', 'title',)
-    empty_value_display = '-пусто-'
 
 
 class CommentAdmin(admin.ModelAdmin):
@@ -27,7 +25,6 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ('author', 'text', 'review', 'pub_date',)
     search_fields = ('review',)
     list_filter = ('author', 'review',)
-    empty_value_display = '-пусто-'
 
 
 class CategoriesAdmin(admin.ModelAdmin):
@@ -35,7 +32,6 @@ class CategoriesAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug',)
     search_fields = ('slug',)
     list_filter = ('slug',)
-    empty_value_display = '-пусто-'
 
 
 class GenresAdmin(admin.ModelAdmin):
@@ -43,7 +39,6 @@ class GenresAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug',)
     search_fields = ('name',)
     list_filter = ('name',)
-    empty_value_display = '-пусто-'
 
 
 class TitleAdmin(admin.ModelAdmin):
@@ -51,7 +46,6 @@ class TitleAdmin(admin.ModelAdmin):
     list_display = ('name', 'year', 'description', 'category',)
     search_fields = ('name', 'year',)
     list_filter = ('year', 'genre', 'category',)
-    empty_value_display = '-пусто-'
 
 
 admin.site.register(User, UserAdmin)

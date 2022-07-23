@@ -64,7 +64,6 @@ def signup_user(request):
         email=email
     )
     confirmation_code = default_token_generator.make_token(user)
-    user.email
     send_mail_to_user(email, confirmation_code)
     return Response(serializer.data,
                     status=status.HTTP_200_OK)
@@ -79,6 +78,7 @@ def get_token(request):
     if not default_token_generator.check_token(user, confirmation_code):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     user.is_active = True
+    user.save()
     serializer.save()
     token = RefreshToken.for_user(user)
     return Response(
