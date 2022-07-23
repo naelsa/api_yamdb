@@ -8,15 +8,14 @@ from rest_framework.permissions import (IsAuthenticated,
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from reviews.models import Review, Title
 from titles.models import Genres, Categories
 from users.models import User
+
 from .filters import TitleFilter
 from .generate_code import send_mail_to_user
 from .mixins import CreateListDestroyViewSet
-from .permissions import (IsAdminOrStaff,
-                          IsAuthorModeratorAdminSuperuser,
+from .permissions import (IsAuthorModeratorAdminSuperuser,
                           IsAdminOrReadOnly, IsAdmin)
 from .serializers import (
     UserSerializer, RegistrationSerializer, RegTokSerializer,

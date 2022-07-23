@@ -115,7 +115,7 @@ class ReviewsSerializer(serializers.ModelSerializer):
         fields = ('id', 'text', 'author', 'score', 'pub_date')
         model = Review
 
-    def validate_review(self, data):
+    def validate(self, data):
         request = self.context['request']
         if request.method != 'POST':
             return data

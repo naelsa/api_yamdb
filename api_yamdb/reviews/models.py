@@ -25,7 +25,7 @@ class BaseTextAuthorPubdateModel(models.Model):
     class Meta:
         abstract = True
         verbose_name = 'Подробное название'
-        verbose_name_plural = 'Подробное название во множественном числе'
+        verbose_name_plural = 'Подробные названия'
         ordering = ('pub_date',)
 
     def __str__(self):
