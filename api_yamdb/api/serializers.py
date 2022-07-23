@@ -1,15 +1,13 @@
-from api_yamdb.settings import MAX_LENGTH_CONFIRMATION_CODE
 from django.conf import settings
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 from rest_framework.relations import SlugRelatedField
 from rest_framework.validators import UniqueValidator
+
 from reviews.models import Comment, Review
 from titles.models import Title, Categories, Genres
 from titles.validators import validate_year
 from users.models import User
-
-from api_yamdb import settings
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -20,6 +18,17 @@ class UserSerializer(serializers.ModelSerializer):
             'username', 'email', 'bio', 'first_name', 'last_name', 'role',
         )
         model = User
+
+
+class UserEditSerializer(serializers.ModelSerializer):
+    """Запрещает редактировать роль пользователю"""
+
+    class Meta:
+        fields = (
+            'username', 'email', 'bio', 'first_name', 'last_name', 'role',
+        )
+        model = User
+        read_only_fields = ('role',)
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -48,7 +57,7 @@ class RegTokSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=settings.MAX_LENGTH_USER,
                                      required=True)
     confirmation_code = serializers.CharField(
-        max_length=MAX_LENGTH_CONFIRMATION_CODE,
+        max_length=settings.MAX_LENGTH_CONFIRMATION_CODE,
         required=True)
 
 
