@@ -1,15 +1,13 @@
+from django.conf import settings
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 from rest_framework.relations import SlugRelatedField
 from rest_framework.validators import UniqueValidator
 
-from api_yamdb import settings
-from api_yamdb.settings import MAX_LENGTH_CONFIRMATION_CODE
 from reviews.models import Comment, Review
 from titles.models import Title, Categories, Genres
 from titles.validators import validate_year
 from users.models import User
-from .validators import NotMeValidator
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -20,6 +18,17 @@ class UserSerializer(serializers.ModelSerializer):
             'username', 'email', 'bio', 'first_name', 'last_name', 'role',
         )
         model = User
+
+
+class UserEditSerializer(serializers.ModelSerializer):
+    """Запрещает редактировать роль пользователю"""
+
+    class Meta:
+        fields = (
+            'username', 'email', 'bio', 'first_name', 'last_name', 'role',
+        )
+        model = User
+        read_only_fields = ('role',)
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -36,7 +45,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('email', 'username')
         model = User
-        validators = [NotMeValidator(), ]
+
+    def validate_username(self, data):
+        if data.lower() == 'me':
+            raise serializers.ValidationError('Имя не может быть "me".')
+        return data
 
 
 class RegTokSerializer(serializers.Serializer):
@@ -44,7 +57,7 @@ class RegTokSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=settings.MAX_LENGTH_USER,
                                      required=True)
     confirmation_code = serializers.CharField(
-        max_length=MAX_LENGTH_CONFIRMATION_CODE,
+        max_length=settings.MAX_LENGTH_CONFIRMATION_CODE,
         required=True)
 
 
@@ -112,6 +125,10 @@ class ReviewsSerializer(serializers.ModelSerializer):
         if current_title.reviews.filter(author=request.user).exists():
             raise serializers.ValidationError(
                 'Вы не можете добавить более одного отзыва на произведение'
+            )
+        if not settings.SCORE_MIN <= data.get('score') <= settings.SCORE_MAX:
+            raise serializers.ValidationError(
+                'Рейтинг должен быть в диапазоне от 1 до 10. '
             )
         return data
 

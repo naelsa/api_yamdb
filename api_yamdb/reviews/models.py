@@ -1,11 +1,12 @@
+from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-
+from django.utils.text import Truncator
 from titles.models import Title
 from users.models import User
 
 
-class BaseAbstractModel(models.Model):
+class BaseTextAuthorPubdateModel(models.Model):
     """Базовая модель."""
     text = models.TextField(
         verbose_name='Подробное название'
@@ -24,11 +25,14 @@ class BaseAbstractModel(models.Model):
     class Meta:
         abstract = True
         verbose_name = 'Подробное название'
-        verbose_name_plural = 'Подробное название во множественном числе'
+        verbose_name_plural = 'Подробные названия'
         ordering = ('pub_date',)
 
+    def __str__(self):
+        return Truncator(self.text).words(settings.NUMBER_WORDS_TRUNC)
 
-class Review(BaseAbstractModel):
+
+class Review(BaseTextAuthorPubdateModel):
     """Отзыв"""
     score = models.PositiveSmallIntegerField(
         verbose_name='Оценка',
@@ -42,12 +46,12 @@ class Review(BaseAbstractModel):
         Title,
         verbose_name='Произведение',
         on_delete=models.CASCADE,
-        related_name='reviews',
     )
 
-    class Meta(BaseAbstractModel.Meta):
+    class Meta(BaseTextAuthorPubdateModel.Meta):
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
+        default_related_name = 'reviews'
         constraints = [
             models.UniqueConstraint(
                 fields=['title', 'author'],
@@ -59,18 +63,18 @@ class Review(BaseAbstractModel):
         return f'Отзыв от {self.author} на {self.title}'
 
 
-class Comment(BaseAbstractModel):
+class Comment(BaseTextAuthorPubdateModel):
     """Комментарий к отзыву."""
     review = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,
-        related_name='comments',
         verbose_name='Отзыв'
     )
 
-    class Meta(BaseAbstractModel.Meta):
+    class Meta(BaseTextAuthorPubdateModel.Meta):
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+        default_related_name = 'comments'
 
     def __str__(self):
         return f'Комментарий от {self.author} к {self.review}'
